@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Ball Balancer Project</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="../index.html#main" class="logo">Return to Main Page</a>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<span class="date">January 2022 - March 2022</span>
+									<h1>Ball Balancer Project</h1>
+								</header>
+								<div class="image main"><img src="../images/ballbalancer.png" alt="" /></div>
+								<p>For this project, I collaborated with a classmate to create a system that uses 11 python files flashed onto a Nucleo STM32 microcontroller to balance a ball on a tilting platform. The microcontroller acts as the controller for the dynamic system, using information from the BNO055 IMU to track the angles of the platform and a resistive touch panel to track the position of the ball. With this information, the controller is able to calculate the necessary duty cycles for the motors in real-time to keep the ball as close to the center of the platform as possible.</p>
+								<iframe src="https://player.vimeo.com/video/879987164?&muted=1#t=8" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Ball Balancer"></iframe>
+								<p><br />One of the main challenges I faced in this project was designing and implementing a PID controller to control the motors of the balancing system. The goal of the controller was to ensure that the motors could reach the designated speed quickly and smoothly. To do this, I used the controller design shown below. After implementing the code, I conducted experiments to determine the optimal gains for the controller.</p>
+								<div class="image main"><img src="../images/closedloop.png" alt=""/></div>
+								<p>Additionally, I encountered a critical problem that was preventing the ball from maintaining its balance on the tilting platform. The issue arose from the fact that the touch panel data, which was essential for the controller to function, was sometimes unreliable due to inadequate contact between the rolling ball and the panel. This resulted in the controller receiving a sequence of incorrect data, which prevented it from functioning properly.</p>
+								<p>To solve the problem with the touch panel data, I developed a filtering method that used a moving data set to determine the reliability of the data. If the readings were determined to be inaccurate, I utilized a method that used the past data to estimate the ball's current position. This involved keeping track of the accurate data points to determine the direction the ball was moving and calculating its speed using a derivative calculation. By combining this information with the last known position of the ball, I was able to accurately estimate its current position and enable the controller to function properly. </p>
+								<p>Through my implementation of this solution, I was able to overcome a critical issue and enable the ball-balancing system to function, which allowed my team to be one of the few that managed to successfully balance the ball on the tilting platform.</p>
+								<a href="https://github.com/dxu07/Ball-Balancer-Project" class="button" style= "margin: 0 20rem; display: block">Github Project Repo</a>
+								
+							</section>
+
+					</div>
+					
+			
+				<!-- Footer -->
+					
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>

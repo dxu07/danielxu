@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Nerf Gun</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="../index.html#main" class="logo">Return to Main Page</a>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<span class="date">April 2022 - June 2022</span>
+									<h1>Nerf Gun<br />
+									Pen Plotter</h1>
+								</header>
+								<div class="image main"><img src="../images/nerf_profile.jpg" alt="" /></div>
+								<p>For my Mechatronics Class (ME 405), we were assigned a project in which we were to build and program a robot that could draw simple shapes and figures. I worked with one other student to design a 2.5 DOF Nerf Gun Pen Plotter that uses nerf darts to draw pictures on a white board. This plotter utilizes a Nucleo STM32476 microcontroller that interfaces with the TMC4210 serial interface IC and the TMC2208 stepper driver, which we used to control our stepper motors. Commands were sent from our PC to the microcontroller via serial/UART communication. In the following sections, we will discuss the features and implementation of our Nerf Gun Pen Plotter. This project allowed me to gain insights on robot kinematics, computer vision, and the optimization of cooperative, task-based robotic systems.</p>
+								<p>This robot has two main functionalities. The primary purpose of this robot is to draw some simple shapes. Outside of the scope of the class, an additional feature we added was to use an attached web camera to find and shoot at the color red. For the shape drawing feature, I analyzed the robot geometry and created an algorithm to iteratively solve the angle instructions for the stepper motors using end-effect effector coordinates from 2D vector images. As a team, we further developed a method to concurrently control the Nerf Gun’s firing mechanism and step motor drivers, allowing simultaneous movement and shooting. </p>
+								<iframe src="https://player.vimeo.com/video/719266625?h=54a4727f35?&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Nerf Camera"></iframe>
+								<script src="https://player.vimeo.com/api/player.js"></script>
+								<script>
+									var iframe = document.querySelector('iframe');
+									var player = new Vimeo.Player(iframe);
+							
+									player.setPlaybackRate(2).then(function(speed) {
+										console.log('Playback speed set to ' + speed);
+									});
+								</script>
+								<p><br />The pen plotter takes in an .hpgl file, reads it, and draws the image according to its instructions. In the demonstration shown above, we prepared an image that incorporates both straight lines and curves to demonstrate its drawing capabilities. An overlay of the target image on top of the actual drawn image is shown below.</p>
+								<div class="image standard"><img src="../images/drawing_comp.png" alt=""/></div>
+								<p>For the other feature, I developed a computer vision algorithm to detect and shoot at targets. To achieve this functionality, I attached a webcam to the side of the gun and used a program run on the computer to detect the color red with the help of OpenCV modules. Instead of using cartesian coordinates, I opted to use the field of view of the camera to find and send direct angular instructions from the PC to the MCU. This made it easier for the robot to make corrections to its target no matter what its position was.</p>
+								<iframe src="https://player.vimeo.com/video/719224223?h=a2495adf7c?&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Nerf Camera Red"></iframe>
+								<p><br />In our use of the nerf gun, we identified several factors that hindered its effectiveness. The darts tended to deviate significantly from their intended trajectory, which reduced the accuracy of the drawing. This could potentially be improved by adding a longer barrel or by designing our own darts that were more resistant to deformation. Additionally, the size of the darts limited the resolution of our drawings, as a significant spacing was required to avoid collisions. This, combined with the limited capacity of the magazine (18 darts), resulted in frequent reloading, which disrupted the flow of the activity. To overcome these limitations, I would have preferred to design a larger magazine that could hold more darts, as well as improve the adhesion of the darts to their target surfaces. These changes would have enabled smoother and more continuous performance.</p>
+								<a href="https://github.com/dxu07/2.5-DOF-Pen-Plotter" class="button" style= "margin: 0 20rem; display: block">Github Project Repo</a>
+
+							</section>
+							
+					</div>
+
+				<!-- Footer -->
+					
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>

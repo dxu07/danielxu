@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Senior Project: Robotic Rover</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="../index.html#main" class="logo">Return to Main Page</a>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<span class="date">Septemeber 2022 - June 2023</span>
+									<h1>Senior Project:<br />
+									Robotic Rover</h1>
+								</header>
+								<div class="image main"><img src="../images/roverpic2.png" alt="" /></div>
+								<p>In this project, I teamed up with three other mechanical engineers to design and build a robotic rover. My role primarily focused on programming both the rover and its base station, while also assisting my teammates with electrical setup and the actual construction of the rover. Our rover was specially designed to run on a six-wheel drive, using a rocker-bogie suspension system for smooth movement. To make this happen, I wrote code in C++, responsible for driving the motors, enabling the rover to communicate with the base station, taking instructions from an Xbox controller, and showing the necessary data. Here's a quick look at what our final product looked like:</p>
+								<iframe src="https://player.vimeo.com/video/880669137?&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="rover test"></iframe>
+								<p><br />Due to budget constraints, we opted to employ six electric skateboard motors, each paired with its own VESC (Vedder Electronic Speed Controller). Each VESC functions as a microcontroller responsible for transmitting instructions to a motor. However, I soon discovered that VESC applications in robotics were limited, and there was no readily available library for us to communicate with the motors according to our specific requirements. VESCs were originally designed with electric skateboard users in mind, primarily to facilitate connectivity with a Bluetooth controller. In contrast, our objectives demanded direct and independent control of all six motors, along with the ability to collect data, such as RPM, current draw, voltage draw, and more.</p>
+								<p>To achieve this, I dove into the VESC source code, which, unfortunately, lacked detailed documentation. The source code is open and can be easily found on GitHub here: <a href="https://github.com/vedderb/bldc">Vedder BLDC</a>. My main aim was to understand how VESCs could talk to a central computer, how they fetched information from the motors, and how they managed motor speed and power settings. After connecting the dots, I mixed portions of the VESC source code and crafted my own techniques to create a personalized library. This library enabled us to control the motors and gather motor-related data seamlessly through serial communication, seamlessly integrated into our own code.</p>
+								<div class="image standard2"><img src="../images/rover plan.png" alt="" /></div>
+								<p>This enabled me to develop the overall rover program in accordance with the plan outlined above. The program employed a central computer to receive instructions from the base station for motor control. In return, it collected motor telemetry and a video feed to transmit back to the base station.</p>
+								<p>The implementation of remote operation proved to be a straightforward process. I established wireless communication using TCP/IP as the underlying protocol. This choice allowed us to handle diverse data types, including text messages and video frames, concurrently. It also provided flexibility for incorporating additional types of binary-encoded data in the future. The use of TCP/IP offered a standardized and dependable data transmission method, even under challenging network conditions. Moreover, it ensured that the receiving device could easily interpret the data, regardless of its format.</p>
+								<p>On the base station's side, I harnessed multithreading to manage multiple tasks simultaneously. This included threads for data interpretation and display, reception of instructions from the Xbox controller, their transmission to the rover, and reception of motor telemetry.</p>
+								<div class="image standard2"><img src="../images/gui test.png" alt="" /></div>
+								<p>The entire system worked well, but I also aimed to improve the user experience by creating a graphical interface (GUI) using the Qt framework, as shown above. However, my limited experience with GUIs posed to be a greater challenge than I had anticipated. I made the mistake of trying to update different GUI elements individually within each thread, but this approach turned out to be unstable. As a result, the GUI would occasionally crash due to a segmentation fault error after running for some time, and will have to be reworked by future teams.</p>
+								<a href="https://digitalcommons.calpoly.edu/cgi/viewcontent.cgi?article=1809&context=mesp" class="button" style= "margin: 0 20rem; display: block">Full Project Report</a>
+							</section>
+
+					</div>
+
+				<!-- Footer -->
+				
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>

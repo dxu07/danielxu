@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Wordle Solver</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="../index.html#main" class="logo">Return to Main Page</a>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>Wordle Solver<br />
+									</h1>
+								</header>
+								<p>A small coding project I worked on is a <a href="https://www.nytimes.com/games/wordle/index.html">Wordle</a> solver program. For the uninformed, Wordle is a word puzzle game where players must guess a hidden five-letter word based on hints provided by the game. If a letter in the player's guess is highlighted green, it means that the letter is both in the correct answer and in the correct position. If the letter is highlighted yellow, it means that the letter is in the correct answer but in the wrong position. And if the letter is grayed out, it means that the letter is not in the correct answer at all. </p>
+								<p>There is a game based on Wordle called <a href="squabble.me">Squabble</a>, where players compete against other players in real-time to solve the most puzzles in the shortest amount of time. I played this game against my friends but found that I often lost because after years of engineering brain, my ability to recall five-letter words had deteriorated. I realized that if I wanted to improve, I would need some help. That's when I decided to create a Wordle solver program to give myself an advantage.</p>
+								<p>At the time, I had limited coding experience, having only used MatLab for class assignments. I was not familiar with many fundamental coding concepts, such as arrays and functions. However, I created a plan for the program and sought out resources to learn more about arrays and other coding techniques that would be helpful for this project.</p>
+								<p>The resulting program uses letter frequency and positioning to eliminate words. To use it, the user must first make a guess and input its results into the GUI.</p>
+								<div class="image standard2"><img src="../images/wordlesolver1.png" alt="" /></div>
+								<p>In the example abover, a great guess is made using the hints provided by the game. The program eliminates as many words as possible from the word bank by first removing any words that contain the letter "S," since the game has indicated that this letter is not in the correct answer. It then uses the information about the positions of the letters "E" and "A" to further narrow down the list of possible words. Finally, it checks for the presence of the letters "L" and "T" in the remaining words, but not in the same positions as in the guess. With this algorithm, the program is able to quickly reduce the number of possible words to just three possible words.</p>
+								<p>The program then analyzes the remaining possible words and realizes that only the letters "P," "B," and "C" separate the possible solutions. By checking the complete word bank, it suggests the word "bicep" in order to eliminate as many of the remaining words as possible.</p>
+								<div class="image main"><img src="../images/wordlesolver2.png" alt="" /></div>
+								<p>Then, when the guess “bicep” is made, only the letter “C” is shown to be still in the answer. Knowing this, the program eliminates the words that do not contain the letter “C” and tells the user that the only remaining solution is the word “cleat”, which turned out to be the correct answer.</p>
+								<p>One of the main issues with the current program is that the user has to manually enter each guess and analyze the hints. This can be time-consuming and error-prone. Another issue is that the program runs on MatLab, which has some quirks when it comes to string manipulation. This can cause the program to crash if the word to be guessed contains duplicate letters. To address these problems, I eventually plan to recreate the program in Python. This will allow me to use Python's powerful libraries to automatically capture the screen and analyze the hints after each guess. This will not only save time and reduce errors, but it will also make the program more robust by avoiding the pitfalls of MatLab's string manipulation. Additionally, Python's simplicity and expressiveness will make it easier to develop and maintain the program.</p>
+							</section>
+
+					</div>
+
+				<!-- Footer -->
+					
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
