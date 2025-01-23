@@ -31,31 +31,260 @@
 									<span class="date">April 2024</span>
 									<h1>TFT Using Genetic Algorithm</h1>
 								</header>
-								<div class="image main"><img src="../images/ballbalancer.png" alt="" /></div>
-								<p>Teamfight Tactics(TFT) is an strategy based autobattler: a round-based PvP game where 8 different players try to create a team that battles automatically on their behalf. There are
-									many small nuances in the game that make it difficult, including managing your economy to buy your team, scouting enemy teams to make sure that you position your team properly,
-									and creating optimal items that improve your team's survivability and damage output. But the most interesting, and probably the most important, aspect of the game is to decide 
-									which champions you assign to your team to beat your opponents. Traditionally, players would figure out what the best team compositions are by trying out different things while they 
-									play. As more games are played, statistics sites would analyze the millions of games being played and showcase the team compositions that had the highest winrates among high ranking 
-									players. The best team compositions are called the "meta", and players will generally try to play towards the meta team compositions. 
+								<div class="image main"><img src="../images/tftgenetics.png" alt="" /></div>
+								<p>Teamfight Tactics (TFT) is a strategy-based autobattler: a round-based PvP game where eight players create teams that battle automatically on their behalf. The game’s complexity lies in its layered decision-making: managing your economy to purchase units, scouting opponents to adjust positioning, and crafting optimal items to enhance team performance. Among these, determining the most effective team composition is arguably the most critical—and most challenging—aspect of the game.
 								</p>
-								<p>But TFT has another problem: there are only a limited number of champions available in the pool that every player must buy from. If every player in the game is trying to play the meta, 
-									then they will all be trying to buy the same units. Since there is a high demand for the meta champions and a low supply of them, then players who are unable to buy the meta champions
-									first will lose. A lot of the strategy in the game once the meta is discovered comes from being able to accumulate enough gold and health to successfully buy all of the champions before 
-									your opponents are able to. However, in Set 11, a trait called "Exalted" was introduced. In TFT, a trait is a unique characteristic or classification of a champion that provides certain 
-									bonuses or effects when a specific number of champions with the same trait are present in your team. These bonuses can either affect only the champions that have that trait or affect 
-									the entire team. The Exalted trait is particularly strong because it provided a powerful damage boost to everyone in the team. This damage boost is strong enough to make non-meta champions
-									capable of being able to compete with the more powerful champions. However, the trait is difficult to play because the champions that have the Exalted trait change from game to game, and 
-									they may not neccesarily slot into meta team compositions. As a result, players tended to ignore this trait in favor of the meta. 
+								<p>Traditionally, players discover optimal team compositions, known as the “meta,” through iterative gameplay and aggregated statistical analysis. High-ranking players naturally gravitate toward these meta compositions, which are usually identified by their superior win rates. However, TFT adds another layer of complexity: a finite shared champion pool. When multiple players pursue the same meta team, competition for key units often results in shortages, forcing players to pivot strategies mid-game. This dynamic makes mastering TFT not just a matter of skill but also of adaptability.
 								</p>
-								<p>I wanted to find a way so that I could play the Exalted team compositions every game since it was under utilized but still very powerful. Trying to figure out what your team composition 
-									is while you're in game can be challenging since there are many other aspects of the game you have to focus on before you can roll for your team. So in order to help me win more, I decided to create
-									a program that does the thinking for me.
+								<p>In Set 11, TFT introduced the Exalted trait, a trait that when activated, provides a substantial damage boost to the entire team. Unlike most traits, champions that possessed the exalted traits are random between games, which introduced an element of unpredictability that discouraged its use in favor of more stable meta compositions. So dDespite its immense potential, Exalted compositions were underutilized due to their inconsistency and difficulty integrating with established meta teams.
+								</p>
+								<p> However, after attending a class where we discussed the genetic algorithm, I wondered if it was possible to apply this technique to TFT. The genetic algorithm is particularly well-suited to problems that have complex solution spaces, and determining the best team composition based around a particular trait seemed to fit that bill. By encoding team compositions as candidate solutions and designing a fitness function to evaluate their effectiveness, I could simulate the evolutionary processes to identify the optimal combinations. 
+								</p>
+								<hr>
+								<h2 style="margin-bottom: 10px;"><strong>Key TFT Terms and Mechanics</strong></h2>
+								<p>This section provides an overview of some terms and  mechanics used in TFT that may be helpful to better understand this project.</p>
+								<h3 style="margin-bottom: 10px;"><strong>Champions</strong></h3>
+								<p>
+									<strong>What They Are:</strong> Champions are the units players deploy on their boards to battle automatically each round. Each champion has a unique combination of traits, stats (e.g., health, damage, and range), and abilities.<br>
+
+									<strong>Cost and Rarity:</strong> Champions range in cost from 1 to 5 gold. Higher-cost champions are generally stronger and harder to acquire, as they appear less frequently in the shop.<br>
+
+									<strong>Champion Pool:</strong> TFT features a finite, shared pool of champions. If many players buy the same champion, it becomes scarce for everyone else.
+								</p>
+								<h3 style="margin-bottom: 10px;"><strong>Traits</strong></h3>
+								<p style="margin-bottom: 0px;">
+									<strong>Definition:</strong> Traits are classifications assigned to champions (e.g., “Bruiser,” “Exalted,” “Warden”) that grant bonuses when a certain number of champions with the same trait are on the board.<br>
+									<strong>Synergy Levels:</strong> Traits have thresholds for activation. For example, the <em>Bruiser</em> trait may grant health bonuses at 2, 4, and 6 champions. Achieving higher thresholds generally provides stronger effects.<br>
+									<strong>Vertical vs. Horizontal Traits:</strong> 
+
+									<ul style="padding-left: 50px;">
+										<span style="font-size: 0.8rem;"><li><strong>Vertical Traits:</strong> Focus on maximizing a single trait to the highest synergy level (e.g., 6 <em>Bruisers</em>).</li>
+										<li><strong>Horizontal Traits:</strong> Spread across multiple traits for more flexible compositions (e.g., activating 2 <em>Bruisers</em>, 2 <em>Wardens</em>, and 2 <em>Rangers</em>).</li></span>
+									</ul>
 
 								</p>
-								<p>Through my implementation of this solution, I was able to overcome a critical issue and enable the ball-balancing system to function, which allowed my team to be one of the few that managed to successfully balance the ball on the tilting platform.</p>
-								<a href="https://github.com/dxu07/Ball-Balancer-Project" class="button" style= "margin: 0 20rem; display: block">Github Project Repo</a>
+
+								<h3 style="margin-bottom: 10px;"><strong>Team Composition</strong></h3>
+								<p style="margin-bottom: 0px;">
+									<strong>What It Means:</strong> A team composition, or “comp,” is the set of champions a player fields. The goal is to build a team with strong synergies and complementary roles.<br>
+									<strong>Frontline vs. Backline:</strong>
+									<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+										<li><strong>Frontline:</strong> Tanky champions placed at the front to absorb damage.</li>
+										<li><strong>Backline:</strong> Damage-dealing champions placed at the back to attack safely.</li>
+									</ul>
 								
+								<p>
+									<strong>Carry Unit:</strong> A designated champion (often with high damage output) around which the team is built. Supporting the carry’s traits and survivability is critical.
+								</p>
+								</p>
+								<h3 style="margin-bottom: 10px;"><strong>Economy</strong></h3>
+								<p style="margin-bottom: 0px;">
+									<strong>Gold:</strong> The in-game currency used to buy champions, reroll the shop, and level up.<br>
+									<strong>Income Sources:</strong>
+									<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+										<li><strong>Base Income:</strong> Gold received every round, regardless of performance.</li>
+										<li><strong>Win/Loss Streaks:</strong> Bonus gold for consecutive wins or losses.</li>
+										<li><strong>Interest:</strong> Earned by saving gold, with 1 gold rewarded for every 10 gold saved (up to 5 gold per round).</li>
+									</ul>
+									<p style="margin-bottom: 0px;">
+									<strong>Spending Strategies:</strong> </p>
+									<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+										<li><strong>Rerolling:</strong> Spending gold to refresh the shop in search of specific champions.</li>
+										<li><strong>Leveling Up:</strong> Spending gold to increase your level, unlocking higher chances for rare champions and more slots for units.</li>
+									</ul>
+								</p>
+								<h3 style="margin-bottom: 10px;"><strong>Champion Pool Mechanics</strong></h3>
+								<p>
+									<strong>Shared Pool:</strong> All players draw champions from a single shared pool. For example, if multiple players are buying <em>Annie</em>, there will be fewer <em>Annies</em> available for everyone.<br>
+									<strong>Contesting:</strong> When multiple players chase the same composition, competition for key champions can force pivots or alternative strategies.
+								</p>
+								<h3 style="margin-bottom: 10px;"><strong>Combat</strong></h3>
+								<p style="margin-bottom: 0px;">
+									<strong>Automatic Battles:</strong> Once the planning phase ends, the selected champions automatically fight against an opponent’s team. Players cannot control their units during combat.<br>
+									<strong>Round Outcomes:</strong>
+									<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+										<li>Winning a round deals damage to the opponent based on the surviving units and the player's level.</li>
+										<li>Losing a round results in taking damage based on the opponent’s surviving units.</li>
+									</ul>
+									<p>
+									<strong>Knockout Mechanics:</strong> Players start with a fixed amount of health and are eliminated when their health reaches zero.</p>
+								</p>
+								<h3 style="margin-bottom: 10px;"><strong>Items</strong></h3>
+								<p style="margin-bottom: 0px;">
+									<strong>Definition:</strong> Items are equippable bonuses that enhance a champion’s stats or grant special effects. They are critical for maximizing a team’s effectiveness.<br>
+									<strong>Crafting:</strong> Items are crafted by combining two basic components (e.g., a <em>Giant's Belt</em> + <em>Needlessly Large Rod</em> = <em>Morellonomicon</em>).<br>
+									<strong>Itemization:</strong> Strategically assigning items to champions based on their roles. For instance:
+									<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+										<li>Damage items for carries.</li>
+										<li>Defensive items for frontline tanks.</li>
+									</ul>
+								</p>
+								<h3 style="margin-bottom: 10px;"><strong>Exalted Trait (Set 11 Specific)</strong></h3>
+								<div class="image standard"><img src="../images/tftgenetics/exaltedtrait.png" alt=""/></div>
+
+								<p>
+									<strong>Overview:</strong> The Exalted trait provides a team-wide damage boost when a certain number of Exalted champions are on the board.<br>
+									<strong>Unique Mechanic:</strong> Unlike most traits, the champions with the Exalted trait change each game, making it unpredictable and challenging to plan around. There are 5-6 random units that become Exalted each game. Since the randomness can often result in many poor quality Exalted units, I target utilizing only 3 Exalted units to activate the trait to ensure a better team quality.<br>
+								</p>
+								<h3 style="margin-bottom: 10px;"><strong>Meta</strong></h3>
+								<p>
+									<strong>Definition:</strong> The “meta” refers to the most effective strategies, team compositions, and item builds based on statistical analysis and high-level play.<br>
+									<strong>Adaptation:</strong> Players often tailor their strategies to counter the current meta or find less-contested compositions to exploit weaknesses in popular builds.
+								</p>
+								<hr>
+								<h2 style="margin-bottom: 10px;"><strong>How the Genetic Algorithm Works</strong></h2>
+								<div class="image standard"><img src="../images/tftgenetics/geneticsgif.gif" alt=""/></div>
+								<p>
+									A genetic algorithm is a search and optimization method inspired by the process of natural selection. It starts with a population of candidate solutions, each represented by some form of encoded “genes.” These solutions could, for example, be bit strings, numeric arrays, or even symbolic expressions—anything that can be manipulated similarly to biological genes. The basic idea is to evolve this population over multiple generations, gradually honing in on better-performing candidates with respect to a given “fitness” measure.
+								</p>
+								<p>
+									In each generation, the genetic algorithm applies three main operators: selection, crossover, and mutation. Selection favors candidates with higher fitness scores, giving them a greater chance of passing their “genes” to the next generation. Crossover merges parts of two parent solutions to produce offspring—some traits from one parent, some from the other—thereby creating new solutions with potentially better characteristics. Mutation introduces small, random changes in the genes of some offspring. Although most mutations might be neutral or detrimental, occasional beneficial mutations help prevent the population from getting stuck in poor solutions.
+								</p> <p>
+									Through these iterative steps, the genetic algorithm explores and exploits the solution space. And while genetics algorithms do not guarantee finding a global optimum for every problem, their flexibility and robustness make them especially useful in challenging optimization tasks, such as making teams for TFT.
+								</p>
+								<hr>
+								
+								<h2 style="margin-bottom: 10px;"><strong>What Makes a Good TFT Team?</strong></h2>
+								<p style="margin-bottom: 0;">In order to apply the genetic algorithm to TFT, it is important to be able to evaluate each team and score it. This score, or fitness, is used by the <code><span class="function">fitness</span></code> function. This function assesses team compositions based on multiple factors that align with TFT's strategic mechanics. Based on my experience as a player and some experimentation, here’s what I decided what makes up a strong team:
+								</p>
+								<p style="margin-bottom: 0;"><strong>Active Traits and Synergies</strong></p>
+								<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+									<li><strong>Trait Activation:</strong> Teams are rewarded for activating powerful traits, particularly the Exalted trait, which provides a significant damage boost.</li>
+									<li><strong>Scaling with Count:</strong> Traits with thresholds (e.g., activating at 2, 4, or 6 units) are evaluated to ensure the team composition effectively leverages these thresholds.</li>
+									<li><strong>Penalties for Non-Activated Traits:</strong> Teams are penalized for including champions whose traits are not activated, discouraging wasted potential.</li>
+								</ul>
+								  
+								<p style="margin-bottom: 0;"><strong>Team Balance</strong></p>
+								<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+									<li><strong>Frontline vs. Backline:</strong> The fitness function considers the balance between tanky frontline units and damage-dealing backline units. A balanced range of champions is critical to a team’s survivability and damage output.</li>
+									<li><strong>Tank Quality:</strong> Additional weight is given to high-cost tanks or champions with valuable tank traits like Bruiser or Warden in order to promote a stronger defensive synergy. I also added weights to make good tanks units that do not have the tank traits viable in the team evaluation. Units that met this criteria were added due to my gameplay experience with those units.</li>
+								  </ul>
+								  
+								<p style="margin-bottom: 0;"><strong>Champion Costs</strong></p>
+								<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+									<li><strong>High-Cost Units:</strong> Teams are rewarded for including high-cost champions, as these are generally more powerful and offer better value for their gold investment.</li>
+									<li><strong>Penalties for Overloading Low-Cost Units:</strong> To discourage spamming low-cost champions, the function deducts points for teams with an abundance of cheap units.</li>
+								  </ul>								  
+								<p style="margin-bottom: 0;"><strong>Exalted Champions</strong></p>
+								<ul style="padding-left: 50px; font-size: 0.8rem; margin-bottom: 0px;">
+									<li><strong>Maximizing Exalted Traits:</strong> Since Exalted is the focal trait, teams with the specified number of Exalted champions are heavily rewarded. Missing or overusing Exalted units leads to penalties.</li>
+									<li><strong>Trait Interactions:</strong> The algorithm ensures that Exalted champions synergize well with other traits and the carry unit (if specified).</li>
+								  </ul>								  
+								<p style="margin-bottom: 0;"><strong>Carry Synergy</strong></p>
+								<p style="margin-bottom: 0;">If a specific carry champion is designated, the fitness function ensures the carry’s traits are well-supported by the team composition. Synergies with the carry are prioritized, and penalties are applied if the carry’s traits are underutilized. When playing a flexible board, players will often try to pick a good carry that is not very contested. This is done by scouting other player boards so I included an option to manually select a unit that the algorithm will then try to build a team composition around. </p>
+								<p style="margin-bottom: 0;"><strong>Range and Positioning</strong></p>
+								<p>The algorithm evaluates the average range of the team to ensure a mix of melee and ranged champions, avoiding compositions that are too one-dimensional.</p>
+								<hr>
+								<h2 style="margin-bottom: 10px; "><strong>Applying the Algorithm to TFT</strong></h2>
+								<p style="margin-bottom: 0;">The algorithm evolves teams over multiple generations. It starts with an initial population of randomly generated teams and iteratively improves them through selection, crossover, and mutation. This process repeats for the specified number of generations and the algorithm maintains the best teams based on fitness and outputs the top-ranked teams after all generations. This method is implemented in the <code><span class="function">natural_selection</span></code> function.</p>
+								<button class="toggleButton">Show Code</button>
+								<pre class="codeBlock"><code><span class="keyword">def</span> <span class="function">natural_selection</span>(<span class="variable">self</span>, <span class="variable">exalt_ids_</span>=[], <span class="variable">exclude_ids_</span>=[], <span class="variable">carry</span>=<span class="keyword">None</span>):
+	<span class="variable">POPULATION_SIZE</span> = <span class="variable">self.POPULATION_SIZE</span>
+	<span class="variable">GENERATIONS</span> = <span class="variable">self.GENERATIONS</span>
+	<span class="variable">TEAM_SIZE</span> = <span class="variable">self.TEAM_SIZE</span>
+	<span class="variable">NUM_EXALTED</span> = <span class="variable">self.NUM_EXALTED</span>
+	<span class="variable">CARRY</span> = <span class="keyword">None</span>
+	<span class="variable">all_generations</span> = []
+
+	<span class="keyword">if</span> <span class="variable">carry</span> <span class="keyword">not</span> <span class="keyword">in</span> <span class="variable">self.unit_to_id</span>:
+		<span class="variable">carry</span> = <span class="keyword">None</span>
+	<span class="keyword">if</span> <span class="variable">carry</span> <span class="keyword">is not</span> <span class="keyword">None</span>:
+		<span class="variable">carry_id</span> = <span class="variable">self.unit_to_id[carry]</span>
+		<span class="variable">TEAM_SIZE</span> -= <span class="number">1</span>
+		<span class="variable">CARRY</span> = <span class="variable">self.set_11_champs_dict[carry_id]</span>
+		<span class="keyword">if</span> <span class="variable">carry_id</span> <span class="keyword">in</span> <span class="variable">exalt_ids_</span>:
+			<span class="variable">NUM_EXALTED</span> -= <span class="number">1</span>
+			<span class="variable">TEAM_SIZE</span> += <span class="number">1</span>
+			<span class="variable">exalt_ids_</span> = <span class="function">list</span>(<span class="variable">set</span>(<span class="variable">exalt_ids_</span>).<span class="function">difference</span>(<span class="function">set</span>([<span class="variable">carry_id</span>])))
+
+	<span class="variable">population</span> = [<span class="variable">self.generate_random_team</span>(<span class="variable">exalt_ids_</span>, <span class="variable">exclude_ids_</span>, <span class="variable">TEAM_SIZE</span>, <span class="variable">NUM_EXALTED</span>, <span class="variable">CARRY</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="function">range</span>(<span class="variable">POPULATION_SIZE</span>)]
+	<span class="keyword">for</span> <span class="variable">generation</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="variable">GENERATIONS</span>):
+		<span class="variable">new_population</span> = []
+		<span class="keyword">while</span> <span class="function">len</span>(<span class="variable">new_population</span>) < <span class="variable">POPULATION_SIZE</span>:
+			<span class="variable">parent1</span> = <span class="variable">self.select_parent</span>(<span class="variable">population</span>, <span class="variable">CARRY</span>)
+			<span class="variable">parent2</span> = <span class="variable">self.select_parent</span>(<span class="variable">population</span>, <span class="variable">CARRY</span>)
+			<span class="variable">child1</span>, <span class="variable">child2</span> = <span class="variable">self.crossover</span>(<span class="variable">parent1</span>, <span class="variable">parent2</span>, <span class="variable">TEAM_SIZE</span>)
+			<span class="variable">child1</span> = <span class="variable">self.mutate</span>(<span class="variable">child1</span>, <span class="variable">generation</span>, <span class="variable">exalt_ids_</span>, <span class="variable">exclude_ids_</span>, <span class="variable">TEAM_SIZE</span>, <span class="variable">NUM_EXALTED</span>, <span class="variable">CARRY</span>)
+			<span class="variable">child2</span> = <span class="variable">self.mutate</span>(<span class="variable">child2</span>, <span class="variable">generation</span>, <span class="variable">exalt_ids_</span>, <span class="variable">exclude_ids_</span>, <span class="variable">TEAM_SIZE</span>, <span class="variable">NUM_EXALTED</span>, <span class="variable">CARRY</span>)
+			<span class="keyword">if</span> <span class="variable">carry</span> <span class="keyword">is not</span> <span class="keyword">None</span>: 
+				<span class="variable">self.ensure_carry</span>(<span class="variable">child1</span>, <span class="variable">CARRY</span>)
+				<span class="variable">self.ensure_carry</span>(<span class="variable">child2</span>, <span class="variable">CARRY</span>)
+			<span class="variable">new_population</span>.<span class="function">extend</span>([<span class="variable">child1</span>, <span class="variable">child2</span>])
+		<span class="variable">population</span> = <span class="variable">new_population</span>[:<span class="variable">self.POPULATION_SIZE</span>]
+		<span class="variable">population</span>.<span class="function">sort</span>(<span class="keyword">key</span>=<span class="keyword">lambda</span> <span class="variable">x</span>: <span class="variable">self.fitness</span>(<span class="variable">x</span>, <span class="variable">CARRY</span>), <span class="keyword">reverse</span>=<span class="keyword">True</span>)
+		<span class="variable">all_generations</span> += <span class="variable">population</span>
+
+	<span class="keyword">return</span> <span class="variable">all_generations</span></code></pre>
+								<h3 style="margin-bottom: 10px;"><strong>Selection</strong></h3>
+								<p style="margin-bottom: 0px;">Parents are chosen using a tournament selection method, where a small subset of the population is sampled, and the team with the highest fitness is selected. This is implemented in the <code><span class="function">select_parent</span></code> function.</p>
+								<pre><code><span class="keyword">def</span> <span class="function">select_parent</span>(<span class="variable">self</span>, <span class="variable">population</span>, <span class="variable">carry</span>):
+	<span class="variable">tournament</span> = <span class="module">random</span>.<span class="function">sample</span>(<span class="variable">population</span>, <span class="number">10</span>)
+	<span class="variable">tournament</span>.<span class="function">sort</span>(<span class="keyword">key</span>=<span class="keyword">lambda</span> <span class="variable">x</span>: <span class="variable">self.fitness</span>(<span class="variable">x</span>, <span class="variable">carry</span>), <span class="keyword">reverse</span>=<span class="keyword">True</span>)
+	<span class="variable">idx_tournament</span> = <span class="module">np</span>.<span class="function">random.choice</span>(<span class="module">np</span>.<span class="function">arange</span>(<span class="number">3</span>)) 
+	<span class="keyword">return</span> <span class="variable">tournament[idx_tournament]</span></code></pre>
+								<h3 style="margin-bottom: 10px;"><strong>Crossover</strong></h3>
+								<p style="margin-bottom: 0px;">Crossover combines two parent teams by swapping parts of their compositions at a randomly selected point, creating two offspring teams. The default team size is set to 8 since that the most optimal level to play this composition due to tempo and amount of traits that can be fit into the team composition. This is implemented in the <code><span class="function">crossover</span></code> function.</p>
+								<pre><code><span class="keyword">def</span> <span class="function">crossover</span>(<span class="variable">self</span>, <span class="variable">parent1</span>, <span class="variable">parent2</span>, <span class="variable">team_size</span> = <span class="number">8</span>):
+	<span class="variable">crossover_point</span> = <span class="module">random</span>.<span class="function">randint</span>(<span class="number">1</span>, <span class="variable">team_size</span> - <span class="number">1</span>)
+	<span class="variable">child1</span> = <span class="variable">parent1</span>[:<span class="variable">crossover_point</span>] + <span class="variable">parent2</span>[<span class="variable">crossover_point</span>:]
+	<span class="variable">child2</span> = <span class="variable">parent2</span>[:<span class="variable">crossover_point</span>] + <span class="variable">parent1</span>[<span class="variable">crossover_point</span>:]
+
+	<span class="keyword">return</span> (<span class="variable">child1</span>, <span class="variable">child2</span>)</code></pre>
+								<h3 style="margin-bottom: 10px;"><strong>Mutation</strong></h3>
+								<p style="margin-bottom: 0px;">Finally, it is important to introduce some diversity by randomly replacing champions in a team. The mutation rate decreases over generations to favor refinement as the population converges. Furthermore, I split each team into two parts, Exalted and Non-Exalted, and perform mutations on each part separately. This allows for experimentation of teams with different Exalted units as well as different non-Exalted units, ensuring that the resulting mutation maintains the Exalted trait active. This is implemented in the <code><span class="function">mutate</span></code> function.</p>
+								<pre><code><span class="keyword">def</span> <span class="function">mutate</span>(<span class="variable">self</span>, <span class="variable">team_</span>, <span class="variable">rate</span>, <span class="variable">exalt_ids_</span>=[], <span class="variable">exclude_ids_</span>=[], <span class="variable">team_size_</span>=<span class="number">8</span>, <span class="variable">num_exalted</span>=<span class="number">3</span>, <span class="variable">CARRY</span>=<span class="keyword">None</span>):
+	
+	<span class="variable">team_</span>, _ = <span class="variable">self.uniquify_team</span>(<span class="variable">team_</span>)
+	<span class="variable">exc_ids</span> = <span class="variable">exalt_ids_</span> + <span class="variable">exclude_ids_</span> + [<span class="variable">self.unit_to_id</span>[<span class="variable">t["name"]</span>] <span class="keyword">for</span> <span class="variable">t</span> <span class="keyword">in</span> <span class="variable">team_</span>]
+
+	<span class="keyword">if</span> <span class="function">len</span>(<span class="variable">team_</span>) < <span class="variable">team_size_</span>:
+		<span class="variable">team_</span> += <span class="variable">self.generate_random_team</span>(<span class="variable">team_size</span>=<span class="variable">team_size_</span> - <span class="function">len</span>(<span class="variable">team_</span>), <span class="variable">exclude_ids</span>=<span class="variable">exc_ids</span>, <span class="variable">num_exalted</span>=<span class="number">0</span>)
+
+	<span class="variable">team_names</span> = <span class="function">set</span>([<span class="variable">ch["name"]</span> <span class="keyword">for</span> <span class="variable">ch</span> <span class="keyword">in</span> <span class="variable">team_</span>])
+	<span class="variable">exalts</span> = [<span class="variable">self.set_11_champs_dict</span>[<span class="variable">self.unit_to_id</span>[<span class="variable">name</span>]] <span class="keyword">for</span> <span class="variable">name</span> <span class="keyword">in</span> <span class="function">set</span>(<span class="variable">self.convert_id_to_name_list</span>(<span class="variable">exalt_ids_</span>)).<span class="function">intersection</span>(<span class="variable">team_names</span>)]
+	<span class="variable">non_exalts</span> = [<span class="variable">self.set_11_champs_dict</span>[<span class="variable">self.unit_to_id</span>[<span class="variable">name</span>]] <span class="keyword">for</span> <span class="variable">name</span> <span class="keyword">in</span> <span class="variable">team_names</span>.<span class="function">difference</span>(<span class="function">set</span>(<span class="variable">self.convert_id_to_name_list</span>(<span class="variable">exalt_ids_</span>)))]
+	<span class="variable">mutation_rate</span> = <span class="function">max</span>(<span class="number">0.8</span> / (<span class="variable">rate</span> / <span class="number">100</span> + <span class="number">1</span>), <span class="number">0.2</span>)
+
+	<span class="keyword">if</span> <span class="module">random</span>.<span class="function">random</span>() < <span class="variable">mutation_rate</span>:  <span class="comment"># Mutation chance</span>
+		<span class="comment"># weighted random choice. 70% to mutate one, 20% to mutate 2, 10% to mutate 1</span>
+		<span class="variable">mutate_size</span> = <span class="module">np</span>.<span class="function">random.choice</span>(<span class="module">np</span>.<span class="function">arange</span>(<span class="number">1</span>, <span class="number">4</span>), <span class="variable">p</span>=[<span class="number">0.7</span>, <span class="number">0.2</span>, <span class="number">0.1</span>]) 
+		<span class="variable">mutate_indexes</span> = <span class="module">np</span>.<span class="function">random.choice</span>(
+			<span class="module">np</span>.<span class="function">arange</span>(<span class="function">len</span>(<span class="variable">non_exalts</span>)), 
+			<span class="variable">size</span>=<span class="function">min</span>(<span class="variable">mutate_size</span>, <span class="function">len</span>(<span class="variable">non_exalts</span>)), 
+			<span class="variable">replace</span>=<span class="keyword">False</span>)
+		
+		<span class="keyword">for</span> <span class="variable">mutate_index</span> <span class="keyword">in</span> <span class="variable">mutate_indexes</span>:
+			<span class="variable">non_exalts</span>[<span class="variable">mutate_index</span>] = <span class="variable">self.generate_random_team</span>(
+				<span class="variable">team_size</span>=<span class="number">1</span>, <span class="variable">exclude_ids</span>=<span class="variable">exc_ids</span>, <span class="variable">num_exalted</span>=<span class="number">0</span>)[<span class="number">0</span>]
+		
+		<span class="variable">exalts</span> = <span class="variable">self.generate_random_team</span>(
+			<span class="variable">team_size</span>=<span class="function">len</span>(<span class="variable">exalts</span>), 
+			<span class="variable">exalted_ids</span>=<span class="variable">exalt_ids_</span>, 
+			<span class="variable">exclude_ids</span>=<span class="variable">exclude_ids_</span>, 
+			<span class="variable">num_exalted</span>=<span class="function">len</span>(<span class="variable">exalts</span>))
+
+		<span class="variable">team_</span> = <span class="variable">exalts</span> + <span class="variable">non_exalts</span>
+
+		<span class="keyword">if</span> <span class="function">len</span>(<span class="variable">team_</span>) < <span class="variable">team_size_</span>:
+			<span class="variable">team_</span> += <span class="variable">self.generate_random_team</span>(
+				<span class="variable">team_size</span>=<span class="variable">team_size_</span> - <span class="function">len</span>(<span class="variable">team_</span>), 
+				<span class="variable">exclude_ids</span>=<span class="variable">exc_ids</span>, 
+				<span class="variable">num_exalted</span>=<span class="number">0</span>)
+
+	<span class="keyword">return</span> <span class="variable">team_</span></code></pre>
+									
+								<hr>
+								<h2 style="margin-bottom: 10px; "><strong>Final Thoughts</strong></h2>
+
+							</body>
+							<p> With the help of a friend familiar with creating websites, I mocked up a local GUI to use the code on, which allowed me to easily adjust select the parameters I'm interested in. 
+							</p>
+							<div class="image standard"><img src="../images/tftgenetics/exaltedgeneticsimp.png" alt=""/></div>	
+							<p> However, after using it for several games, I can say that it works! sometimes... Here are some of the more recent results of me using it for several ranked matches. 
+							</p>
+							<div class="image standard"><img src="../images/tftgenetics/exaltedresults.png" alt=""/></div>	
+							<p> In total, I played 30 games using while utilizing this algorithm. On average, I placed 4.5/8 but gained +300 ranked points utilizing it. I realized that there are many other parameters that also need to be considered while utilizing the genetic algorithm that I was not able to include. Since TFT is a live game, the strength of certain units change every 2 weeks. The developers may make certain units grossly overpowered and other units horrendous. In order to account for this, the fitness algorithm would somehow need to account for the unit quality on a day to day basis as players figure out what units are strong and weak. But since I don't have access to that information, the algorithm falls short of truly making the best possible team. 
+							</p>
 							</section>
 
 					</div>
@@ -74,6 +303,25 @@
 			<script src="../assets/js/breakpoints.min.js"></script>
 			<script src="../assets/js/util.js"></script>
 			<script src="../assets/js/main.js"></script>
+			<script>
+				// Get all toggle buttons and code blocks
+				const toggleButtons = document.querySelectorAll(".toggleButton");
+				const codeBlocks = document.querySelectorAll(".codeBlock");
+			
+				// Add event listeners to each button
+				toggleButtons.forEach((button, index) => {
+				  button.addEventListener("click", () => {
+					const codeBlock = codeBlocks[index]; // Match button to its corresponding code block
+					if (codeBlock.style.display === "none") {
+					  codeBlock.style.display = "block";
+					  button.textContent = `Hide Code`;
+					} else {
+					  codeBlock.style.display = "none";
+					  button.textContent = `Show Code`;
+					}
+				  });
+				});
+			  </script>
 
 	</body>
 </html>

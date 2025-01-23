@@ -271,9 +271,37 @@ input, select, textarea {
 		pre code {
 			display: block;
 			line-height: 1.75;
-			padding: 1rem 1.5rem;
+			padding: 0rem 1rem;
 			overflow-x: auto;
+			background-color: #282c34;
+			text-align: left;
+			color: #ffffff;
+			font-size: 0.8rem;
+
 		}
+
+	.keyword {
+		color: #c678dd; 
+		}
+	.function {
+		color: #61afef; 
+	}
+	.string {
+		color: #98c379; 
+	}
+	.comment {
+		color: #5c6370; 
+		font-style: italic;
+	}
+	.variable {
+		color: #ffffff;
+	}
+	.number {
+		color: #d19a66;
+	}
+	.module {
+		color: #e23b60; 
+	}
 
 	hr {
 		border: 0;
@@ -2945,6 +2973,21 @@ input, select, textarea {
 	ul.icons.alt li a.icon:hover:before {
 		box-shadow: inset 0 0 0 2px #18bfef;
 	}
+	.smaller-list ul {
+		margin: 0; 
+		font-size: 0.75rem;   /* smaller font size */
+		padding-left: 2rem;   /* more indentation for the list */
+	}
+	  
+	.smaller-list ul li {
+		margin-top: 0;
+		padding-left: 0.5rem; /* extra indent for each list item */
+	}
+
+	.smaller-list p {
+		font-size: 0.8rem;
+	  }
+	  
 
 /* Section/Article */
 
